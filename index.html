@@ -509,10 +509,10 @@
       <div class="hero-tags">
         <!-- <span class="tag">ESP8266</span> -->
         <span class="tag">ESP32</span>
-        <span class="tag">ESP32-C3</span>
+        <!-- <span class="tag">ESP32-C3</span> -->
         <span class="tag">ESP32-C6</span>
-        <span class="tag">ESP32-S2</span>
-        <span class="tag">ESP32-S3</span>
+        <!-- <span class="tag">ESP32-S2</span> -->
+        <!-- <span class="tag">ESP32-S3</span> -->
         <span class="tag">Web Serial API</span>
       </div>
     </div>
@@ -534,24 +534,30 @@
           </optgroup>
           -->
           <optgroup label="ESP32">
-            <option value="esp32">ESP32 generic — 4M flash</option>
-            <option value="esp32-denkyd4">ESP32 DenkyD4 board</option>
-            <option value="esp32-ethernet">ESP32 with Ethernet adapter</option>
+            <option value="esp32">ESP32 Generic (4Mb Flash)</option>
+            <option value="esp32-denkyd4">Denky D4 (ESP32-Pico)</option>
+            <option value="esp32-ethernet">ESP32 Ethernet</option>
           </optgroup>
+          <!-- ESP32-C3 — commented out, not used for now
           <optgroup label="ESP32-C3">
             <option value="esp32c3">ESP32-C3 generic — 4M (e.g. Sonoff Basic R4)</option>
             <option value="esp32c3-winky">ESP32-C3 Winky board</option>
           </optgroup>
+          -->
           <optgroup label="ESP32-C6">
-            <option value="esp32c6-winky">ESP32-C6 Winky board</option>
+            <option value="esp32c6-winky">Winky (ESP32-C6)</option>
           </optgroup>
+          <!-- ESP32-S2 — commented out, not used for now
           <optgroup label="ESP32-S2">
             <option value="esp32s2">ESP32-S2 — 4M flash</option>
           </optgroup>
+          -->
+          <!-- ESP32-S3 — commented out, not used for now
           <optgroup label="ESP32-S3">
             <option value="esp32s3">ESP32-S3 — 4M flash</option>
             <option value="esp32s3-16m">ESP32-S3 — 16M flash</option>
           </optgroup>
+          -->
         </select>
         <span class="select-arrow" aria-hidden="true">▾</span>
       </div>
@@ -717,13 +723,13 @@
       // },
       'esp32': {
         chip: 'ESP32',
-        name: 'ESP32 generic (4M)',
+        name: 'ESP32 Generic (4Mb Flash)',
         desc: 'Generic ESP32 with 4MB flash. Includes a 1.3MB LittleFS partition for history storage. Use the factory image for first flash.',
         file: 'tasmota32-teleinfo.factory.bin',
       },
       'esp32-denkyd4': {
         chip: 'ESP32',
-        name: 'ESP32 DenkyD4',
+        name: 'Denky D4 (ESP32-Pico)',
         desc: 'Board-specific build for the DenkyD4 WiFi Teleinfo board (ESP32-based).',
         file: 'tasmota32-teleinfo-denkyd4.factory.bin',
       },
@@ -733,42 +739,45 @@
         desc: 'ESP32 with Ethernet adapter support (e.g. Olimex ESP32 POE, EthTInfo shield).',
         file: 'tasmota32-teleinfo-ethernet.factory.bin',
       },
-      'esp32c3': {
-        chip: 'ESP32-C3',
-        name: 'ESP32-C3 generic (4M)',
-        desc: 'Generic ESP32-C3 with 4MB flash (e.g. Sonoff Basic R4). Includes 1.3MB LittleFS partition.',
-        file: 'tasmota32c3-teleinfo.factory.bin',
-      },
-      'esp32c3-winky': {
-        chip: 'ESP32-C3',
-        name: 'ESP32-C3 Winky',
-        desc: 'Board-specific build for the Winky board (ESP32-C3 variant).',
-        file: 'tasmota32c3-teleinfo-winky.factory.bin',
-      },
+      // ESP32-C3 — commented out, not used for now
+      // 'esp32c3': {
+      //   chip: 'ESP32-C3',
+      //   name: 'ESP32-C3 generic (4M)',
+      //   desc: 'Generic ESP32-C3 with 4MB flash (e.g. Sonoff Basic R4). Includes 1.3MB LittleFS partition.',
+      //   file: 'tasmota32c3-teleinfo.factory.bin',
+      // },
+      // 'esp32c3-winky': {
+      //   chip: 'ESP32-C3',
+      //   name: 'ESP32-C3 Winky',
+      //   desc: 'Board-specific build for the Winky board (ESP32-C3 variant).',
+      //   file: 'tasmota32c3-teleinfo-winky.factory.bin',
+      // },
       'esp32c6-winky': {
         chip: 'ESP32-C6',
-        name: 'ESP32-C6 Winky',
+        name: 'Winky (ESP32-C6)',
         desc: 'Board-specific build for the Winky board (ESP32-C6 variant).',
         file: 'tasmota32c6-teleinfo-winky.factory.bin',
       },
-      'esp32s2': {
-        chip: 'ESP32-S2',
-        name: 'ESP32-S2 (4M)',
-        desc: 'ESP32-S2 with 4MB flash. Includes 1.3MB LittleFS partition for history storage.',
-        file: 'tasmota32s2-teleinfo.factory.bin',
-      },
-      'esp32s3': {
-        chip: 'ESP32-S3',
-        name: 'ESP32-S3 (4M)',
-        desc: 'ESP32-S3 with 4MB flash. Includes 1.3MB LittleFS partition for history storage.',
-        file: 'tasmota32s3-teleinfo.factory.bin',
-      },
-      'esp32s3-16m': {
-        chip: 'ESP32-S3',
-        name: 'ESP32-S3 (16M)',
-        desc: 'ESP32-S3 with 16MB flash. Includes a large LittleFS partition for extended history storage.',
-        file: 'tasmota32s3-teleinfo-16m.factory.bin',
-      },
+      // ESP32-S2 — commented out, not used for now
+      // 'esp32s2': {
+      //   chip: 'ESP32-S2',
+      //   name: 'ESP32-S2 (4M)',
+      //   desc: 'ESP32-S2 with 4MB flash. Includes 1.3MB LittleFS partition for history storage.',
+      //   file: 'tasmota32s2-teleinfo.factory.bin',
+      // },
+      // ESP32-S3 — commented out, not used for now
+      // 'esp32s3': {
+      //   chip: 'ESP32-S3',
+      //   name: 'ESP32-S3 (4M)',
+      //   desc: 'ESP32-S3 with 4MB flash. Includes 1.3MB LittleFS partition for history storage.',
+      //   file: 'tasmota32s3-teleinfo.factory.bin',
+      // },
+      // 'esp32s3-16m': {
+      //   chip: 'ESP32-S3',
+      //   name: 'ESP32-S3 (16M)',
+      //   desc: 'ESP32-S3 with 16MB flash. Includes a large LittleFS partition for extended history storage.',
+      //   file: 'tasmota32s3-teleinfo-16m.factory.bin',
+      // },
     };
 
     // ── Firmware sources ────────────────────────────────────────────
