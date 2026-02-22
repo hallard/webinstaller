@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tasmota Teleinfo – Web Installer</title>
+  <meta name="description" content="Flash Tasmota Teleinfo firmware on your ESP device directly from your browser." />
+  <script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange:       #e07b39;
+      --orange-dark:  #c4622a;
+      --bg:           #0d1117;
+      --surface:      #161b22;
+      --surface2:     #21262d;
+      --border:       #30363d;
+      --text:         #c9d1d9;
+      --text-dim:     #8b949e;
+      --text-bright:  #f0f6fc;
+      --green:        #3fb950;
+      --yellow:       #d29922;
+      --red:          #f85149;
+      --blue:         #58a6ff;
+      --radius:       8px;
+      --radius-lg:    12px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+    }
+
+    a { color: var(--orange); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Header ─────────────────────────────────────── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 1.5rem;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .header-inner {
+      max-width: 820px;
+      margin: 0 auto;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+    .brand:hover { text-decoration: none; }
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--orange);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+    .brand-name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-bright);
+      line-height: 1.2;
+    }
+    .brand-sub {
+      font-size: 0.6875rem;
+      color: var(--text-dim);
+      font-weight: 400;
+    }
+    .header-links {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+    .header-links a {
+      color: var(--text-dim);
+      font-size: 0.8125rem;
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+      transition: color 0.15s;
+    }
+    .header-links a:hover { color: var(--text-bright); text-decoration: none; }
+    .header-links svg { flex-shrink: 0; }
+
+    /* ── Main ───────────────────────────────────────── */
+    main {
+      flex: 1;
+      max-width: 820px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 3rem;
+    }
+
+    /* ── Hero ───────────────────────────────────────── */
+    .hero {
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero h2 {
+      font-size: 1.625rem;
+      font-weight: 700;
+      color: var(--text-bright);
+      margin-bottom: 0.5rem;
+    }
+    .hero p {
+      color: var(--text-dim);
+      font-size: 0.9375rem;
+      max-width: 600px;
+    }
+    .hero-tags {
+      margin-top: 0.875rem;
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .tag {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    /* ── Alert ──────────────────────────────────────── */
+    .alert {
+      display: flex;
+      gap: 0.75rem;
+      padding: 0.875rem 1rem;
+      border-radius: var(--radius);
+      margin-bottom: 1.25rem;
+      font-size: 0.875rem;
+      border: 1px solid transparent;
+      align-items: flex-start;
+      line-height: 1.5;
+    }
+    .alert-icon { flex-shrink: 0; margin-top: 1px; }
+    .alert-warning {
+      background: rgba(210, 153, 34, 0.1);
+      border-color: rgba(210, 153, 34, 0.35);
+      color: #e3b341;
+    }
+    .alert-warning a { color: #e3b341; text-decoration: underline; }
+    .alert strong { display: block; margin-bottom: 0.125rem; }
+    .alert-hidden { display: none !important; }
+
+    /* ── Card ───────────────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.375rem 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.125rem;
+    }
+    .step-num {
+      width: 26px;
+      height: 26px;
+      background: var(--orange);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: white;
+      flex-shrink: 0;
+    }
+    .step-label {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--text-bright);
+    }
+
+    /* ── Device Select ──────────────────────────────── */
+    .select-wrap {
+      position: relative;
+      margin-bottom: 0.75rem;
+    }
+    select {
+      width: 100%;
+      padding: 0.625rem 2.5rem 0.625rem 0.875rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text-bright);
+      font-size: 0.9375rem;
+      font-family: inherit;
+      appearance: none;
+      cursor: pointer;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    select:focus {
+      outline: none;
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px rgba(224, 123, 57, 0.18);
+    }
+    .select-arrow {
+      position: absolute;
+      right: 0.875rem;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: var(--text-dim);
+      font-size: 0.75rem;
+    }
+    optgroup {
+      font-weight: 700;
+      color: var(--text-dim);
+    }
+    option {
+      color: var(--text-bright);
+      background: var(--surface2);
+      font-weight: 400;
+    }
+    .device-info {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.625rem 0.875rem;
+      font-size: 0.8125rem;
+      color: var(--text-dim);
+      min-height: 2.5rem;
+      display: flex;
+      align-items: center;
+    }
+
+    /* ── Channel Tabs ───────────────────────────────── */
+    .channels {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.625rem;
+    }
+    .ch-btn {
+      padding: 0.875rem 1rem;
+      background: var(--surface2);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+      transition: border-color 0.15s, background 0.15s;
+      color: var(--text);
+    }
+    .ch-btn:hover:not(:disabled) { border-color: var(--orange); }
+    .ch-btn.active {
+      border-color: var(--orange);
+      background: rgba(224, 123, 57, 0.08);
+    }
+    .ch-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .ch-name {
+      font-weight: 600;
+      font-size: 0.9375rem;
+      color: var(--text-bright);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.25rem;
+    }
+    .ch-desc { font-size: 0.75rem; color: var(--text-dim); }
+    .badge {
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .badge-dev  { background: rgba(63, 185, 80, 0.2); color: var(--green); border: 1px solid rgba(63, 185, 80, 0.3); }
+    .badge-soon { background: var(--surface); color: var(--text-dim); border: 1px solid var(--border); }
+
+    /* ── Install area ───────────────────────────────── */
+    .install-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 1rem;
+    }
+    .install-hint {
+      font-size: 0.875rem;
+      color: var(--text-dim);
+      max-width: 420px;
+    }
+    .install-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.8125rem 2.25rem;
+      background: var(--orange);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s, transform 0.1s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+    .install-btn:hover  { background: var(--orange-dark); }
+    .install-btn:active { transform: scale(0.98); }
+    .install-btn svg    { flex-shrink: 0; }
+    .browser-err {
+      font-size: 0.875rem;
+      color: var(--red);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* ── Notes ──────────────────────────────────────── */
+    .notes {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--yellow);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      margin-top: 1.5rem;
+    }
+    .notes-title {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--yellow);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .notes ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .notes li {
+      font-size: 0.8125rem;
+      color: var(--text-dim);
+      display: flex;
+      gap: 0.5rem;
+      align-items: flex-start;
+    }
+    .notes li::before {
+      content: '·';
+      color: var(--orange);
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: -1px;
+    }
+    .notes code {
+      font-size: 0.75rem;
+      background: var(--surface2);
+      padding: 1px 5px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+    }
+
+    /* ── Source info bar ────────────────────────────── */
+    .source-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.625rem 0.875rem;
+      margin-top: 1rem;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      flex-wrap: wrap;
+    }
+    .source-bar a { color: var(--blue); font-size: 0.75rem; }
+    .source-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      display: inline-block;
+      margin-right: 0.375rem;
+      flex-shrink: 0;
+    }
+
+    /* ── Footer ─────────────────────────────────────── */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 1.25rem 1.5rem;
+      text-align: center;
+    }
+    footer p {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      line-height: 1.8;
+    }
+    footer a { color: var(--text-dim); }
+    footer a:hover { color: var(--text-bright); text-decoration: none; }
+    .sep { margin: 0 0.5rem; opacity: 0.4; }
+
+    /* ── Responsive ─────────────────────────────────── */
+    @media (max-width: 540px) {
+      .header-links { display: none; }
+      .channels { grid-template-columns: 1fr; }
+      main { padding: 1.25rem 1rem 2.5rem; }
+      .hero h2 { font-size: 1.375rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ── HEADER ──────────────────────────────────── -->
+  <header>
+    <div class="header-inner">
+      <a class="brand" href="#">
+        <div class="brand-icon">⚡</div>
+        <div>
+          <div class="brand-name">Tasmota Teleinfo</div>
+          <div class="brand-sub">Web Installer</div>
+        </div>
+      </a>
+      <nav class="header-links" aria-label="External links">
+        <a href="https://github.com/NicolasBernaerts/tasmota/tree/master/teleinfo"
+           target="_blank" rel="noopener noreferrer">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
+              0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
+              -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66
+              .07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15
+              -.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27
+              .68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12
+              .51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48
+              0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+          Firmware
+        </a>
+        <a href="https://github.com/hallard/webinstaller"
+           target="_blank" rel="noopener noreferrer">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
+              0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
+              -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66
+              .07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15
+              -.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27
+              .68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12
+              .51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48
+              0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+          Installer
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ── MAIN ────────────────────────────────────── -->
+  <main>
+
+    <!-- Browser compatibility warning (shown via JS if Web Serial unavailable) -->
+    <div class="alert alert-warning alert-hidden" id="browserWarning" role="alert">
+      <span class="alert-icon">⚠️</span>
+      <div>
+        <strong>Unsupported browser</strong>
+        Web Serial API is required. Please use
+        <a href="https://www.google.com/chrome/" target="_blank" rel="noopener">Google Chrome</a> or
+        <a href="https://www.microsoft.com/edge" target="_blank" rel="noopener">Microsoft Edge</a>
+        on a desktop computer. iOS and Firefox are not supported.
+      </div>
+    </div>
+
+    <!-- Hero -->
+    <div class="hero">
+      <h2>Flash Tasmota Teleinfo directly from your browser</h2>
+      <p>
+        Install or update Tasmota with Teleinfo (TIC) support on your ESP device via USB —
+        no software installation required.
+      </p>
+      <div class="hero-tags">
+        <span class="tag">ESP8266</span>
+        <span class="tag">ESP32</span>
+        <span class="tag">ESP32-C3</span>
+        <span class="tag">ESP32-C6</span>
+        <span class="tag">ESP32-S2</span>
+        <span class="tag">ESP32-S3</span>
+        <span class="tag">Web Serial API</span>
+      </div>
+    </div>
+
+    <!-- ── STEP 1: Device ──────────────────────── -->
+    <div class="card">
+      <div class="step-header">
+        <div class="step-num">1</div>
+        <div class="step-label">Select your device</div>
+      </div>
+
+      <div class="select-wrap">
+        <select id="deviceSelect" aria-label="Device selection">
+          <optgroup label="ESP8266">
+            <option value="esp8266-1m">ESP8266 1M — standard (no history storage)</option>
+            <option value="esp8266-4m">ESP8266 4M — with 2M LittleFS</option>
+            <option value="esp8266-16m">ESP8266 16M — with 14M LittleFS</option>
+          </optgroup>
+          <optgroup label="ESP32">
+            <option value="esp32">ESP32 generic — 4M flash</option>
+            <option value="esp32-denkyd4">ESP32 DenkyD4 board</option>
+            <option value="esp32-ethernet">ESP32 with Ethernet adapter</option>
+          </optgroup>
+          <optgroup label="ESP32-C3">
+            <option value="esp32c3">ESP32-C3 generic — 4M (e.g. Sonoff Basic R4)</option>
+            <option value="esp32c3-winky">ESP32-C3 Winky board</option>
+          </optgroup>
+          <optgroup label="ESP32-C6">
+            <option value="esp32c6-winky">ESP32-C6 Winky board</option>
+          </optgroup>
+          <optgroup label="ESP32-S2">
+            <option value="esp32s2">ESP32-S2 — 4M flash</option>
+          </optgroup>
+          <optgroup label="ESP32-S3">
+            <option value="esp32s3">ESP32-S3 — 4M flash</option>
+            <option value="esp32s3-16m">ESP32-S3 — 16M flash</option>
+          </optgroup>
+        </select>
+        <span class="select-arrow" aria-hidden="true">▾</span>
+      </div>
+
+      <div class="device-info" id="deviceInfo" aria-live="polite"></div>
+    </div>
+
+    <!-- ── STEP 2: Channel ─────────────────────── -->
+    <div class="card">
+      <div class="step-header">
+        <div class="step-num">2</div>
+        <div class="step-label">Select firmware channel</div>
+      </div>
+
+      <div class="channels" role="group" aria-label="Firmware channel">
+        <button class="ch-btn active" id="btn-nightly"
+                onclick="setChannel('nightly')" type="button">
+          <div class="ch-name">
+            Nightly
+            <span class="badge badge-dev">dev</span>
+          </div>
+          <div class="ch-desc">Latest build from master branch</div>
+        </button>
+        <button class="ch-btn" id="btn-release"
+                disabled type="button">
+          <div class="ch-name">
+            Release
+            <span class="badge badge-soon">coming soon</span>
+          </div>
+          <div class="ch-desc">Stable tagged releases</div>
+        </button>
+      </div>
+
+      <!-- Source info bar -->
+      <div class="source-bar" id="sourceBar">
+        <span>
+          <span class="source-dot"></span>
+          Source: <strong id="sourceLabel">nightly (master branch)</strong>
+        </span>
+        <a id="sourceLink"
+           href="https://github.com/NicolasBernaerts/tasmota/tree/master/teleinfo/binary"
+           target="_blank" rel="noopener noreferrer">
+          View binaries on GitHub ↗
+        </a>
+      </div>
+    </div>
+
+    <!-- ── STEP 3: Flash ───────────────────────── -->
+    <div class="card">
+      <div class="step-header">
+        <div class="step-num">3</div>
+        <div class="step-label">Flash firmware</div>
+      </div>
+
+      <div class="install-area">
+        <p class="install-hint">
+          Connect your ESP device via USB, then click the button below.
+          You will be prompted to select the serial port.
+        </p>
+
+        <esp-web-install-button id="installButton" erase-first>
+          <!-- Custom activate button -->
+          <button class="install-btn" slot="activate">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.5"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+            Connect &amp; Install
+          </button>
+
+          <!-- Unsupported browser -->
+          <span slot="unsupported" class="browser-err">
+            ⚠️ Your browser does not support Web Serial.
+            Use <a href="https://www.google.com/chrome/" target="_blank" rel="noopener">Chrome</a>
+            or <a href="https://www.microsoft.com/edge" target="_blank" rel="noopener">Edge</a>.
+          </span>
+
+          <!-- Not on HTTPS -->
+          <span slot="not-allowed" class="browser-err">
+            ⚠️ Web Serial requires HTTPS. Please open this page over a secure connection.
+          </span>
+        </esp-web-install-button>
+      </div>
+    </div>
+
+    <!-- ── NOTES ───────────────────────────────── -->
+    <div class="notes">
+      <div class="notes-title">
+        <span>⚠</span> Important notes
+      </div>
+      <ul>
+        <li>
+          If coming from <strong>official Tasmota firmware</strong>, the partition layout differs —
+          use a factory image and enable <em>Erase device</em> in the install dialog to avoid boot loops.
+        </li>
+        <li>
+          For OTA updates (after initial flash), use the <code>.bin</code> file — not
+          <code>.factory.bin</code> — via the Tasmota web interface.
+        </li>
+        <li>
+          Nightly builds are compiled directly from the
+          <a href="https://github.com/NicolasBernaerts/tasmota/tree/master/teleinfo"
+             target="_blank" rel="noopener">master branch</a>
+          and may occasionally be unstable.
+        </li>
+        <li>
+          LittleFS history storage is only available on the <strong>4M</strong> and
+          <strong>16M</strong> variants. The 1M ESP8266 build has no filesystem.
+        </li>
+        <li>
+          Web Serial API requires <strong>Chrome or Edge on desktop</strong>.
+          Mobile browsers and Firefox are not supported.
+        </li>
+      </ul>
+    </div>
+
+  </main>
+
+  <!-- ── FOOTER ──────────────────────────────────── -->
+  <footer>
+    <p>
+      Firmware by
+      <a href="https://github.com/NicolasBernaerts" target="_blank" rel="noopener">Nicolas Bernaerts</a>
+      <span class="sep">·</span>
+      Installer by
+      <a href="https://github.com/hallard" target="_blank" rel="noopener">hallard</a>
+      <span class="sep">·</span>
+      Powered by
+      <a href="https://esphome.github.io/esp-web-tools/" target="_blank" rel="noopener">ESP Web Tools</a>
+      <br>
+      <a href="https://github.com/hallard/webinstaller" target="_blank" rel="noopener">View source on GitHub</a>
+      <span class="sep">·</span>
+      <a href="https://github.com/hallard/webinstaller/issues" target="_blank" rel="noopener">Report an issue</a>
+    </p>
+  </footer>
+
+  <!-- ── SCRIPT ──────────────────────────────────── -->
+  <script>
+    // ── Device definitions ──────────────────────────────────────────
+    // file: binary filename in the source repo
+    // chip: chipFamily string expected by esp-web-tools
+    // desc: shown in the device info box
+    const DEVICES = {
+      'esp8266-1m': {
+        chip: 'ESP8266',
+        name: 'ESP8266 1M',
+        desc: 'ESP8266 with 1MB flash. No LittleFS — Teleinfo history storage not available.',
+        file: 'tasmota-teleinfo.bin',
+      },
+      'esp8266-4m': {
+        chip: 'ESP8266',
+        name: 'ESP8266 4M',
+        desc: 'ESP8266 with 4MB flash. Includes a 2MB LittleFS partition for history file storage.',
+        file: 'tasmota-teleinfo-4m.bin',
+      },
+      'esp8266-16m': {
+        chip: 'ESP8266',
+        name: 'ESP8266 16M',
+        desc: 'ESP8266 with 16MB flash. Includes a 14MB LittleFS partition for history file storage.',
+        file: 'tasmota-teleinfo-16m.bin',
+      },
+      'esp32': {
+        chip: 'ESP32',
+        name: 'ESP32 generic (4M)',
+        desc: 'Generic ESP32 with 4MB flash. Includes a 1.3MB LittleFS partition for history storage. Use the factory image for first flash.',
+        file: 'tasmota32-teleinfo.factory.bin',
+      },
+      'esp32-denkyd4': {
+        chip: 'ESP32',
+        name: 'ESP32 DenkyD4',
+        desc: 'Board-specific build for the DenkyD4 WiFi Teleinfo board (ESP32-based).',
+        file: 'tasmota32-teleinfo-denkyd4.factory.bin',
+      },
+      'esp32-ethernet': {
+        chip: 'ESP32',
+        name: 'ESP32 Ethernet',
+        desc: 'ESP32 with Ethernet adapter support (e.g. Olimex ESP32 POE, EthTInfo shield).',
+        file: 'tasmota32-teleinfo-ethernet.factory.bin',
+      },
+      'esp32c3': {
+        chip: 'ESP32-C3',
+        name: 'ESP32-C3 generic (4M)',
+        desc: 'Generic ESP32-C3 with 4MB flash (e.g. Sonoff Basic R4). Includes 1.3MB LittleFS partition.',
+        file: 'tasmota32c3-teleinfo.factory.bin',
+      },
+      'esp32c3-winky': {
+        chip: 'ESP32-C3',
+        name: 'ESP32-C3 Winky',
+        desc: 'Board-specific build for the Winky board (ESP32-C3 variant).',
+        file: 'tasmota32c3-teleinfo-winky.factory.bin',
+      },
+      'esp32c6-winky': {
+        chip: 'ESP32-C6',
+        name: 'ESP32-C6 Winky',
+        desc: 'Board-specific build for the Winky board (ESP32-C6 variant).',
+        file: 'tasmota32c6-teleinfo-winky.factory.bin',
+      },
+      'esp32s2': {
+        chip: 'ESP32-S2',
+        name: 'ESP32-S2 (4M)',
+        desc: 'ESP32-S2 with 4MB flash. Includes 1.3MB LittleFS partition for history storage.',
+        file: 'tasmota32s2-teleinfo.factory.bin',
+      },
+      'esp32s3': {
+        chip: 'ESP32-S3',
+        name: 'ESP32-S3 (4M)',
+        desc: 'ESP32-S3 with 4MB flash. Includes 1.3MB LittleFS partition for history storage.',
+        file: 'tasmota32s3-teleinfo.factory.bin',
+      },
+      'esp32s3-16m': {
+        chip: 'ESP32-S3',
+        name: 'ESP32-S3 (16M)',
+        desc: 'ESP32-S3 with 16MB flash. Includes a large LittleFS partition for extended history storage.',
+        file: 'tasmota32s3-teleinfo-16m.factory.bin',
+      },
+    };
+
+    // ── Firmware sources ────────────────────────────────────────────
+    // Raw GitHub content has CORS enabled (Access-Control-Allow-Origin: *)
+    // Fallback CDN: https://cdn.jsdelivr.net/gh/NicolasBernaerts/tasmota@master/teleinfo/binary/
+    const SOURCES = {
+      nightly: {
+        label: 'nightly (master branch)',
+        baseUrl: 'https://raw.githubusercontent.com/NicolasBernaerts/tasmota/master/teleinfo/binary/',
+        repoUrl: 'https://github.com/NicolasBernaerts/tasmota/tree/master/teleinfo/binary',
+      },
+      // release: {
+      //   label: 'release',
+      //   baseUrl: 'https://github.com/NicolasBernaerts/tasmota/releases/download/TAGNAME/',
+      //   repoUrl: 'https://github.com/NicolasBernaerts/tasmota/releases',
+      // },
+    };
+
+    // ── State ───────────────────────────────────────────────────────
+    let currentChannel  = 'nightly';
+    let currentDeviceId = document.getElementById('deviceSelect').value;
+    let currentBlobUrl  = null;
+
+    // ── Build & apply manifest ──────────────────────────────────────
+    function applyManifest() {
+      const device = DEVICES[currentDeviceId];
+      const src    = SOURCES[currentChannel];
+      if (!device || !src) return;
+
+      // Update device description
+      document.getElementById('deviceInfo').textContent = device.desc;
+
+      // Build manifest object
+      const manifest = {
+        name:    `Tasmota Teleinfo – ${device.name}`,
+        version: currentChannel === 'nightly' ? 'nightly-master' : 'release',
+        builds: [{
+          chipFamily: device.chip,
+          parts: [{ path: src.baseUrl + device.file, offset: 0 }],
+        }],
+      };
+
+      // Replace blob URL
+      if (currentBlobUrl) URL.revokeObjectURL(currentBlobUrl);
+      const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+      currentBlobUrl = URL.createObjectURL(blob);
+
+      document.getElementById('installButton').setAttribute('manifest', currentBlobUrl);
+
+      // Update source bar
+      document.getElementById('sourceLabel').textContent = src.label;
+      document.getElementById('sourceLink').href = src.repoUrl;
+    }
+
+    // ── Channel switch ──────────────────────────────────────────────
+    function setChannel(ch) {
+      if (!SOURCES[ch]) return;
+      currentChannel = ch;
+      document.querySelectorAll('.ch-btn').forEach(b => b.classList.remove('active'));
+      const btn = document.getElementById('btn-' + ch);
+      if (btn) btn.classList.add('active');
+      applyManifest();
+    }
+
+    // ── Device change ───────────────────────────────────────────────
+    document.getElementById('deviceSelect').addEventListener('change', function () {
+      currentDeviceId = this.value;
+      applyManifest();
+    });
+
+    // ── Init ────────────────────────────────────────────────────────
+    applyManifest();
+
+    // Show browser warning if Web Serial is unavailable
+    if (!('serial' in navigator)) {
+      document.getElementById('browserWarning').classList.remove('alert-hidden');
+    }
+  </script>
+</body>
+</html>
