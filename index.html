@@ -253,7 +253,19 @@
       min-height: 2.5rem;
       display: flex;
       align-items: center;
+      gap: 0.875rem;
     }
+    .device-info img {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      border-radius: 6px;
+      flex-shrink: 0;
+      background: var(--surface);
+      padding: 4px;
+    }
+    .device-info .device-text { display: flex; flex-direction: column; gap: 0.35rem; }
+    .device-info a { font-size: 0.75rem; color: var(--blue); }
 
     /* ── Channel Tabs ───────────────────────────────── */
     .channels {
@@ -730,7 +742,9 @@
       'esp32-denkyd4': {
         chip: 'ESP32',
         name: 'Denky D4 (ESP32-Pico)',
-        desc: 'Board-specific build for the DenkyD4 WiFi Teleinfo board (ESP32-based).',
+        desc: 'ESP32-PICO-V3-02 based board for French energy meter Teleinfo (TIC). 8Mb Flash, 2Mb PSRAM, USB-C, RGB LED, I2C connector.',
+        img: 'https://raw.githubusercontent.com/hallard/Denky-D4/main/pictures/Denky-D4-red.png',
+        link: 'https://github.com/hallard/Denky-D4',
         file: 'tasmota32-teleinfo-denkyd4.factory.bin',
       },
       'esp32-ethernet': {
@@ -808,7 +822,17 @@
       if (!device || !src) return;
 
       // Update device description
-      document.getElementById('deviceInfo').textContent = device.desc;
+      const infoEl = document.getElementById('deviceInfo');
+      if (device.img || device.link) {
+        infoEl.innerHTML =
+          (device.img ? `<img src="${device.img}" alt="${device.name}">` : '') +
+          `<div class="device-text">
+            <span>${device.desc}</span>
+            ${device.link ? `<a href="${device.link}" target="_blank" rel="noopener">View on GitHub ↗</a>` : ''}
+          </div>`;
+      } else {
+        infoEl.textContent = device.desc;
+      }
 
       // Build manifest object
       const manifest = {
