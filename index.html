@@ -507,7 +507,7 @@
         no software installation required.
       </p>
       <div class="hero-tags">
-        <span class="tag">ESP8266</span>
+        <!-- <span class="tag">ESP8266</span> -->
         <span class="tag">ESP32</span>
         <span class="tag">ESP32-C3</span>
         <span class="tag">ESP32-C6</span>
@@ -526,11 +526,13 @@
 
       <div class="select-wrap">
         <select id="deviceSelect" aria-label="Device selection">
+          <!-- ESP8266 — commented out, not used for now
           <optgroup label="ESP8266">
             <option value="esp8266-1m">ESP8266 1M — standard (no history storage)</option>
             <option value="esp8266-4m">ESP8266 4M — with 2M LittleFS</option>
             <option value="esp8266-16m">ESP8266 16M — with 14M LittleFS</option>
           </optgroup>
+          -->
           <optgroup label="ESP32">
             <option value="esp32">ESP32 generic — 4M flash</option>
             <option value="esp32-denkyd4">ESP32 DenkyD4 board</option>
@@ -694,24 +696,25 @@
     // chip: chipFamily string expected by esp-web-tools
     // desc: shown in the device info box
     const DEVICES = {
-      'esp8266-1m': {
-        chip: 'ESP8266',
-        name: 'ESP8266 1M',
-        desc: 'ESP8266 with 1MB flash. No LittleFS — Teleinfo history storage not available.',
-        file: 'tasmota-teleinfo.bin',
-      },
-      'esp8266-4m': {
-        chip: 'ESP8266',
-        name: 'ESP8266 4M',
-        desc: 'ESP8266 with 4MB flash. Includes a 2MB LittleFS partition for history file storage.',
-        file: 'tasmota-teleinfo-4m.bin',
-      },
-      'esp8266-16m': {
-        chip: 'ESP8266',
-        name: 'ESP8266 16M',
-        desc: 'ESP8266 with 16MB flash. Includes a 14MB LittleFS partition for history file storage.',
-        file: 'tasmota-teleinfo-16m.bin',
-      },
+      // ESP8266 — commented out, not used for now
+      // 'esp8266-1m': {
+      //   chip: 'ESP8266',
+      //   name: 'ESP8266 1M',
+      //   desc: 'ESP8266 with 1MB flash. No LittleFS — Teleinfo history storage not available.',
+      //   file: 'tasmota-teleinfo.bin',
+      // },
+      // 'esp8266-4m': {
+      //   chip: 'ESP8266',
+      //   name: 'ESP8266 4M',
+      //   desc: 'ESP8266 with 4MB flash. Includes a 2MB LittleFS partition for history file storage.',
+      //   file: 'tasmota-teleinfo-4m.bin',
+      // },
+      // 'esp8266-16m': {
+      //   chip: 'ESP8266',
+      //   name: 'ESP8266 16M',
+      //   desc: 'ESP8266 with 16MB flash. Includes a 14MB LittleFS partition for history file storage.',
+      //   file: 'tasmota-teleinfo-16m.bin',
+      // },
       'esp32': {
         chip: 'ESP32',
         name: 'ESP32 generic (4M)',
