@@ -1,7 +1,7 @@
 # Teleinfo – Web Installer
 
 > Flash [Teleinfo](https://github.com/NicolasBernaerts/tasmota/tree/master/teleinfo)
-> firmware on ESP8266 / ESP32 devices directly from your browser — no software required.
+> firmware on ESP32 devices directly from your browser — no software required.
 
 **Live installer → [projet-xky.github.io/webinstall](https://projet-xky.github.io/webinstall)**
 
@@ -15,22 +15,25 @@ Uses [ESP Web Tools](https://esphome.github.io/esp-web-tools/) and the
 
 | Device | Chip | Binary |
 |--------|------|--------|
-| ESP8266 1M | ESP8266 | `tasmota-teleinfo.bin` |
-| ESP8266 4M | ESP8266 | `tasmota-teleinfo-4m.bin` |
-| ESP8266 16M | ESP8266 | `tasmota-teleinfo-16m.bin` |
-| ESP32 generic (4M) | ESP32 | `tasmota32-teleinfo.factory.bin` |
-| ESP32 DenkyD4 | ESP32 | `tasmota32-teleinfo-denkyd4.factory.bin` |
+| Winky (ESP32-C6) | ESP32-C6 | `tasmota32c6-teleinfo-winky.factory.bin` |
+| ESP32 Generic (4Mb Flash) | ESP32 | `tasmota32-teleinfo.factory.bin` |
+| Denky D4 (ESP32-Pico) | ESP32 | `tasmota32-teleinfo-denkyd4.factory.bin` |
 | ESP32 Ethernet | ESP32 | `tasmota32-teleinfo-ethernet.factory.bin` |
-| ESP32-C3 generic | ESP32-C3 | `tasmota32c3-teleinfo.factory.bin` |
-| ESP32-C3 Winky | ESP32-C3 | `tasmota32c3-teleinfo-winky.factory.bin` |
-| ESP32-C6 Winky | ESP32-C6 | `tasmota32c6-teleinfo-winky.factory.bin` |
-| ESP32-S2 | ESP32-S2 | `tasmota32s2-teleinfo.factory.bin` |
-| ESP32-S3 4M | ESP32-S3 | `tasmota32s3-teleinfo.factory.bin` |
-| ESP32-S3 16M | ESP32-S3 | `tasmota32s3-teleinfo-16m.factory.bin` |
+
+Default selected board: **Winky (ESP32-C6)**
+
+### Commented out (not in use)
+
+| Device | Chip |
+|--------|------|
+| ESP8266 1M / 4M / 16M | ESP8266 |
+| ESP32-C3 generic / Winky | ESP32-C3 |
+| ESP32-S2 | ESP32-S2 |
+| ESP32-S3 4M / 16M | ESP32-S3 |
 
 Binaries are fetched live from
 [NicolasBernaerts/tasmota · teleinfo/binary](https://github.com/NicolasBernaerts/tasmota/tree/master/teleinfo/binary)
-— no files are committed to this repo.
+— no binary files are committed to this repo (except `images/winky.jpeg`).
 
 ---
 
@@ -53,11 +56,28 @@ release: {
 },
 ```
 
-Then re-enable the Release button:
+Then re-enable the Release button by removing the `disabled` attribute:
 
 ```html
-<!-- Remove the `disabled` attribute from this button in index.html -->
 <button class="ch-btn" id="btn-release" onclick="setChannel('release')" type="button">
+```
+
+---
+
+## Device info cards
+
+Each active device can display a thumbnail image and a description in the info box.
+Add `img` and `link` fields to the device entry in the `DEVICES` object in `index.html`:
+
+```js
+'my-device': {
+  chip: 'ESP32',
+  name: 'My Device',
+  desc: 'Short description shown in the info box.',
+  img:  'images/my-device.jpg',   // local file in images/ or absolute URL
+  link: 'https://github.com/...',  // optional GitHub/project link
+  file: 'firmware.factory.bin',
+},
 ```
 
 ---
@@ -68,12 +88,10 @@ The site is a single static `index.html` — no build step required.
 
 ### GitHub Pages (automatic)
 
-1. Create a repository named **`webinstall`** under the `projet-xky` organisation
-2. Push this repo to `main`
-3. In **Settings → Pages**, set source to **GitHub Actions**
-4. The workflow (`.github/workflows/deploy.yml`) deploys automatically on every push
+The workflow (`.github/workflows/deploy.yml`) deploys automatically on every push to `main`.
+It uses `actions/configure-pages@v5` with `enablement: true` to auto-enable Pages on first run.
 
-The site will be live at `https://projet-xky.github.io/webinstall/`.
+The site is live at **`https://projet-xky.github.io/webinstall/`**.
 
 ### Local preview
 
@@ -88,5 +106,8 @@ npx serve .
 ## Credits
 
 - Firmware: [Nicolas Bernaerts](https://github.com/NicolasBernaerts/tasmota)
-- Installer: [hallard](https://github.com/hallard)
+- Winky board: [PREDIS G2Elab – Grenoble INP](https://predis.g2elab.grenoble-inp.fr/smartbuilding/index.php/winky-grand-public-esp32c6/)
+- Denky D4 board: [hallard/Denky-D4](https://github.com/hallard/Denky-D4)
+- EthTInfo board: [hallard/EthTInfo](https://github.com/hallard/EthTInfo)
+- Installer: [hallard](https://github.com/hallard) / [projet-xky](https://github.com/projet-xky)
 - Powered by: [ESP Web Tools](https://esphome.github.io/esp-web-tools/) (ESPHome / Nabu Casa)
