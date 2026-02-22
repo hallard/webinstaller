@@ -1,6 +1,6 @@
-# Tasmota Teleinfo – Web Installer
+# Teleinfo – Web Installer
 
-> Flash [Tasmota Teleinfo](https://github.com/NicolasBernaerts/tasmota/tree/master/teleinfo)
+> Flash [Teleinfo](https://github.com/NicolasBernaerts/tasmota/tree/master/teleinfo)
 > firmware on ESP8266 / ESP32 devices directly from your browser — no software required.
 
 **Live installer → [hallard.github.io/webinstaller](https://hallard.github.io/webinstaller)**
@@ -29,7 +29,7 @@ Uses [ESP Web Tools](https://esphome.github.io/esp-web-tools/) and the
 | ESP32-S3 16M | ESP32-S3 | `tasmota32s3-teleinfo-16m.factory.bin` |
 
 Binaries are fetched live from
-[NicolasBernaerts/tasmota](https://github.com/NicolasBernaerts/tasmota/tree/master/teleinfo/binary)
+[NicolasBernaerts/tasmota · teleinfo/binary](https://github.com/NicolasBernaerts/tasmota/tree/master/teleinfo/binary)
 — no files are committed to this repo.
 
 ---
@@ -38,7 +38,7 @@ Binaries are fetched live from
 
 | Channel | Source | Status |
 |---------|--------|--------|
-| **Nightly** | `master` branch of NicolasBernaerts/tasmota | ✅ Active |
+| **Nightly** | `master` branch of NicolasBernaerts/tasmota repo | ✅ Active |
 | **Release** | GitHub Releases | 🚧 Coming soon |
 
 To add release support, uncomment and fill in the `release` entry in the `SOURCES`

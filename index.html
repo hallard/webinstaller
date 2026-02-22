@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tasmota Teleinfo – Web Installer</title>
-  <meta name="description" content="Flash Tasmota Teleinfo firmware on your ESP device directly from your browser." />
+  <title>Teleinfo – Web Installer</title>
+  <meta name="description" content="Flash Teleinfo firmware on your ESP device directly from your browser." />
   <script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -447,7 +447,7 @@
       <a class="brand" href="#">
         <div class="brand-icon">⚡</div>
         <div>
-          <div class="brand-name">Tasmota Teleinfo</div>
+          <div class="brand-name">Teleinfo</div>
           <div class="brand-sub">Web Installer</div>
         </div>
       </a>
@@ -501,9 +501,9 @@
 
     <!-- Hero -->
     <div class="hero">
-      <h2>Flash Tasmota Teleinfo directly from your browser</h2>
+      <h2>Flash Teleinfo directly from your browser</h2>
       <p>
-        Install or update Tasmota with Teleinfo (TIC) support on your ESP device via USB —
+        Install or update firmware with Teleinfo (TIC) support on your ESP device via USB —
         no software installation required.
       </p>
       <div class="hero-tags">
@@ -643,12 +643,12 @@
       </div>
       <ul>
         <li>
-          If coming from <strong>official Tasmota firmware</strong>, the partition layout differs —
+          If coming from <strong>official stock firmware</strong>, the partition layout differs —
           use a factory image and enable <em>Erase device</em> in the install dialog to avoid boot loops.
         </li>
         <li>
           For OTA updates (after initial flash), use the <code>.bin</code> file — not
-          <code>.factory.bin</code> — via the Tasmota web interface.
+          <code>.factory.bin</code> — via the firmware web interface.
         </li>
         <li>
           Nightly builds are compiled directly from the
@@ -800,7 +800,7 @@
 
       // Build manifest object
       const manifest = {
-        name:    `Tasmota Teleinfo – ${device.name}`,
+        name:    `Teleinfo – ${device.name}`,
         version: currentChannel === 'nightly' ? 'nightly-master' : 'release',
         builds: [{
           chipFamily: device.chip,
