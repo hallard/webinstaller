@@ -3,7 +3,7 @@
 > Flash [Teleinfo](https://github.com/NicolasBernaerts/tasmota/tree/master/teleinfo)
 > firmware on ESP8266 / ESP32 devices directly from your browser — no software required.
 
-**Live installer → [hallard.github.io/webinstaller](https://hallard.github.io/webinstaller)**
+**Live installer → [projet-xky.github.io/webinstall](https://projet-xky.github.io/webinstall)**
 
 Uses [ESP Web Tools](https://esphome.github.io/esp-web-tools/) and the
 [Web Serial API](https://developer.mozilla.org/docs/Web/API/Web_Serial_API)
@@ -68,12 +68,12 @@ The site is a single static `index.html` — no build step required.
 
 ### GitHub Pages (automatic)
 
-1. Create a repository named **`webinstaller`** on your GitHub account
+1. Create a repository named **`webinstall`** under the `projet-xky` organisation
 2. Push this repo to `main`
 3. In **Settings → Pages**, set source to **GitHub Actions**
 4. The workflow (`.github/workflows/deploy.yml`) deploys automatically on every push
 
-The site will be live at `https://hallard.github.io/webinstaller/`.
+The site will be live at `https://projet-xky.github.io/webinstall/`.
 
 ### Local preview
 
